@@ -1,0 +1,3 @@
+@function calcSize($num) {
+    @return 100% / ($num / 0.94); 
+}
