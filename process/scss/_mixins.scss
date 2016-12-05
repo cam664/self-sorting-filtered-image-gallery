@@ -1,3 +1,24 @@
+$z-layers: (
+    filter-indicator-main: 90,
+    nav-default: 98,
+    nav-reset: 99,
+    view: 99,
+    nav-filter: 100,
+    modal: 888,
+    nav-modal: 999,
+    view-active: 998,
+    image-wrapper-active: 999
+);
+
+@function z($key) {
+  @if map-has-key($z-layers, $key) {
+    @return map-get($z-layers, $key);
+  }
+
+  @warn "Unknown `#{$key}` in $z-layers.";
+  @return null;
+}
+
 @function calcSize($num) {
     @return 100% / ($num / 0.94); 
 }

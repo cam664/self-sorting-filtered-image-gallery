@@ -10,7 +10,7 @@ gulp.task('scripts', function(){
     .pipe(plumber())//stops gulp from cancelling watch cmd on syntax error
     .pipe(sourcemaps.init())
     .pipe(uglify())
-    .pipe(sourcemaps.write())
+    .pipe(sourcemaps.write('../maps'))
     .pipe(gulp.dest('build/js'));
 });
 
@@ -21,7 +21,7 @@ gulp.task('styles', function(){
         outputStyle: 'compressed'
     }).on('error', sass.logError))
     .pipe(prefix('> 5%'))
-    .pipe(sourcemaps.write())
+    .pipe(sourcemaps.write('../maps'))
     .pipe(gulp.dest('build/css/'))
 });
 
