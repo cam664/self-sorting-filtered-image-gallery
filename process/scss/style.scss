@@ -44,7 +44,10 @@ $day7: #b5a65d;
 header {
     background-image: url(../img/hero.jpg);
     background-size: cover;
-    min-height: 700px;
+    height: 680px;
+    @media screen and (max-height: 775px) {
+        height: 550px;
+    }
     img {
         margin: 2% 0 0 7%;
         width: 431px;
@@ -86,7 +89,7 @@ ul li {
     margin: 0 auto;
 }
 .nav {
-    z-index: 98;
+    z-index: z(nav-default);
     overflow: hidden;
     position: absolute;
     display: flex;
@@ -106,12 +109,12 @@ ul li {
     top: 0;
 }
 #filter-nav {
-    z-index: 100;
+    z-index: z(nav-filter);
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.3);
     background: transparent;
 }
 #reset-nav {
-    z-index: 99;
+    z-index: z(nav-reset);
     ul li {
         background-color: #ccc;
         color: #555;
@@ -119,7 +122,7 @@ ul li {
     }
 }
 #modal {
-    z-index: 888;
+    z-index: z(modal);
     display: none;
     background-color: rgba(0, 0, 0, 0.8);
     position: fixed;
@@ -141,7 +144,7 @@ ul li {
 
 #modal-nav {
     display: flex;
-    z-index: 999;
+    z-index: z(nav-modal);
     position: absolute;
     left: 50%;
     top: 92%;
@@ -201,7 +204,7 @@ ul li {
     }
 }
 .filter-indicator-main {
-    z-index: 90;
+    z-index: z(filter-indicator-main);
     position: absolute;
     width: 100%;
     height: 15px;
@@ -252,7 +255,7 @@ ul li {
     }
 }
 .view {
-    z-index: 99;
+    z-index: z(view);
     position: relative;
     height: 17vw;
     border-radius: 12px 12px 0px 0px;
@@ -279,7 +282,7 @@ ul li {
     margin: 0 auto;
 }
 .image-wrapper-active {
-    z-index: 999;
+    z-index: z(image-wrapper-active);
     position: fixed;
     height: 82%;
     width: auto;
@@ -304,7 +307,7 @@ ul li {
     }
 }
 .view-active {
-    z-index: 998;
+    z-index: z(view-active);
     position: relative;
     height: 100%;
     width: auto;
