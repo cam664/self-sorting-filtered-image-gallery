@@ -100,7 +100,7 @@ var lazyLoad = (function () {
     }
     
     function setScrollInterval(fn) {
-        setInterval(fn, 300);
+        setInterval(fn, 200);
     }
     //check every 300ms if a scroll event has fired. If true loadImages()
     function scrollHandler() {

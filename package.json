@@ -17,11 +17,11 @@
   },
   "homepage": "https://github.com/cam664/self-sorting-filtered-image-gallery#readme",
   "devDependencies": {
-    "gulp": "^3.9.x",
-    "gulp-autoprefixer": "^3.1.1",
-    "gulp-plumber": "^1.1.x",
-    "gulp-sass": "^2.3.x",
-    "gulp-sourcemaps": "^1.9.x",
-    "gulp-uglify": "^2.0.x"
+    "gulp": "latest",
+    "gulp-autoprefixer": "latest",
+    "gulp-plumber": "latest",
+    "gulp-sass": "latest",
+    "gulp-sourcemaps": "latest",
+    "gulp-uglify": "^latest"
   }
 }
