@@ -15,17 +15,16 @@ Img.prototype.collect = function () {
 //render method creates css classes .image-wrapper, .view and .filter-indicator with class .day to set corresponding day color
 Img.prototype.render = function () {
 
-    $('#image-container').append('<div class="image-wrapper"><div class="view"><img src="img/img-loading.gif" data-src=' + '/gallery/'+this.src + '></div><div class="filter-indicator day' + this.day + '"></div></div>');
+    $('#image-container').append('<div class="image-wrapper"><div class="view"><img src="img/img-loading.gif" data-src=' + /*'/gallery/' + */this.src + '></div><div class="filter-indicator day' + this.day + '"></div></div>');
 };
 
 Img.instances = [];
 
-//global variable to get around problem of initPage returning empty array. Used in nav.renderBtns 
-var numOfDays = [];
 
 var initPage = (function () {
-    var dir = "/gallery/";
+    var dir = "gallery/";
     var datesCollection = [];
+    var numOfDays = [];
     //local ajax call
     $.ajax({
         url: dir,
@@ -44,13 +43,15 @@ var initPage = (function () {
         },
 
         complete: function () {
+            
             calcNumDays();
             setImgsDay();
             renderImgs();
             lazyLoad.loadImages();//load all images currently in viewport
-            nav.renderBtns();//populate navigation
+            nav.renderBtns(numOfDays);//populate navigation
         }
     });
+    
     //input: datesCollection result: remove duplicate dates, numOfDays.length is how many days trip lasted
     function calcNumDays() {
         numOfDays = datesCollection.reduce(function (a, b) {
@@ -58,12 +59,14 @@ var initPage = (function () {
             return a;
         }, []);
     }
-    //check the date prop of Img.instances agaisnt numOfDays. Match index + 1 becomes correct day picture was taken
-    function setImgsDay() {
+    
+    //check the date prop of Img.instances agaisnt the set of dates in numOfDays. Match index + 1 becomes correct day picture was taken
+    function setImgsDay(/*numOfDays*/) {
         Img.instances.forEach(function (el) {
             el.day = numOfDays.indexOf(el.date) + 1;
         });
     }
+    
     //inject HTML for all images into #image-container 
     function renderImgs() {
         Img.instances.forEach(function (el) {
@@ -146,7 +149,7 @@ var nav = (function () {
         navAnimations($(this));
     });
 
-    function renderBtns() {
+    function renderBtns(numOfDays) {
         var btnWidth = '' + (100 / (numOfDays.length / 0.94)) + '%';//width of btns is percent based on number of btns needed
         
         //inform user the dates of their picures span too many days
