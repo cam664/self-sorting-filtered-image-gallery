@@ -15,14 +15,14 @@ Img.prototype.collect = function () {
 //render method creates css classes .image-wrapper, .view and .filter-indicator with class .day to set corresponding day color
 Img.prototype.render = function () {
 
-    $('#image-container').append('<div class="image-wrapper"><div class="view"><img src="img/img-loading.gif" data-src=' + /*'/gallery/' + */this.src + '></div><div class="filter-indicator day' + this.day + '"></div></div>');
+    $('#image-container').append('<div class="image-wrapper"><div class="view"><img src="img/img-loading.gif" data-src=' + '/gallery/' + this.src + '></div><div class="filter-indicator day' + this.day + '"></div></div>');
 };
 
 Img.instances = [];
 
 
 var initPage = (function () {
-    var dir = "gallery/";
+    var dir = "/gallery/";
     var datesCollection = [];
     var numOfDays = [];
     //local ajax call
