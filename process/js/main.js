@@ -45,8 +45,7 @@ var initPage = (function () {
         complete: function () {
             
             calcNumDays();
-            setImgsDay();
-            renderImgs();
+            setImgsDayThenRender();
             lazyLoad.loadImages();//load all images currently in viewport
             nav.renderBtns(numOfDays);//populate navigation
         }
@@ -61,16 +60,11 @@ var initPage = (function () {
     }
     
     //check the date prop of Img.instances agaisnt the set of dates in numOfDays. Match index + 1 becomes correct day picture was taken
-    function setImgsDay(/*numOfDays*/) {
+    function setImgsDayThenRender() {
         Img.instances.forEach(function (el) {
             el.day = numOfDays.indexOf(el.date) + 1;
-        });
-    }
-    
-    //inject HTML for all images into #image-container 
-    function renderImgs() {
-        Img.instances.forEach(function (el) {
-            el.render();
+
+            el.render();//render after date set
         });
     }
 })();
@@ -105,7 +99,7 @@ var lazyLoad = (function () {
     function setScrollInterval(fn) {
         setInterval(fn, 200);
     }
-    //check every 300ms if a scroll event has fired. If true loadImages()
+    //check every 200ms if a scroll event has fired. If true loadImages()
     function scrollHandler() {
         if (didScroll) {
             didScroll = false;
