@@ -254,6 +254,22 @@ ul li {
         width: calcSize(4);    
     }
 }
+
+.image-placeholder {
+    z-index: 0;
+    height: 0;
+    position: relative;
+    display: inline-block;
+    width: calcSize(5);
+    margin-top: 23px;
+    pointer-events: all;
+    cursor: pointer;
+    @media screen and (max-width: 1050px) {
+        width: calcSize(4);    
+    }
+}    
+
+
 .view {
     z-index: z(view);
     position: relative;
