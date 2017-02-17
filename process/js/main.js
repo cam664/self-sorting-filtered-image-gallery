@@ -15,16 +15,15 @@ Img.prototype.collect = function () {
 //render method creates css classes .image-wrapper, .view and .filter-indicator with class .day to set corresponding day color
 Img.prototype.render = function () {
 
-    $('#image-container').append('<div class="image-wrapper"><div class="view"><img src="img/img-loading.gif" data-src=' + '/gallery/' + this.src + '></div><div class="filter-indicator day' + this.day + '"></div></div>');
+    $('#image-container').append('<div class="image-wrapper"><div class="view"><img src="img/img-loading.gif" data-src=' +/* '/gallery/' + */this.src + '></div><div class="filter-indicator day' + this.day + '"></div></div>');
 };
 
 Img.instances = [];
 
 
 var initPage = (function () {
-    var dir = "/gallery/";
+    var dir = "gallery/";
     var datesCollection = [];
-    var numOfDays = [];
     //local ajax call
     $.ajax({
         url: dir,
@@ -35,8 +34,10 @@ var initPage = (function () {
                 if (val.match(/\.(jpe?g|png|gif)$/)) {
                     var date = val.match(/\d+(?=_)/g);//match all digits before "_" This is the date when dealing with android picture naming convention 
 
-                    datesCollection.push(date[0]);//push all dates of all images into array
-
+                    if (datesCollection.indexOf(date[0]) === -1) {
+                        datesCollection.push(date[0]);//collect all unique dates
+                    }
+                    
                     var image = new Img(date[0], val);//instantiate with date and src (val)
                 }
             });
@@ -44,28 +45,23 @@ var initPage = (function () {
 
         complete: function () {
             
-            calcNumDays();
             setImgsDayThenRender();
             lazyLoad.loadImages();//load all images currently in viewport
-            nav.renderBtns(numOfDays);//populate navigation
+            nav.renderBtns(datesCollection);//populate navigation
         }
     });
-    
-    //input: datesCollection result: remove duplicate dates, numOfDays.length is how many days trip lasted
-    function calcNumDays() {
-        numOfDays = datesCollection.reduce(function (a, b) {
-            if (a.indexOf(b) < 0) a.push(b);
-            return a;
-        }, []);
-    }
-    
+
     //check the date prop of Img.instances agaisnt the set of dates in numOfDays. Match index + 1 becomes correct day picture was taken
     function setImgsDayThenRender() {
         Img.instances.forEach(function (el) {
-            el.day = numOfDays.indexOf(el.date) + 1;
+            console.log(datesCollection);
+            el.day = datesCollection.indexOf(el.date) + 1;
 
             el.render();//render after date set
         });
+        for (var i = 0; i < 4; i++) {//adding non visible elements to prevent flexbox rendering the last row of images with spaces between them  
+            $('#image-container').append('<div class="image-placeholder"></div>');
+        }
     }
 })();
 
@@ -97,9 +93,9 @@ var lazyLoad = (function () {
     }
     
     function setScrollInterval(fn) {
-        setInterval(fn, 200);
+        setInterval(fn, 500);
     }
-    //check every 200ms if a scroll event has fired. If true loadImages()
+    //check every 500ms if a scroll event has fired. If true loadImages()
     function scrollHandler() {
         if (didScroll) {
             didScroll = false;
@@ -143,15 +139,15 @@ var nav = (function () {
         navAnimations($(this));
     });
 
-    function renderBtns(numOfDays) {
-        var btnWidth = '' + (100 / (numOfDays.length / 0.94)) + '%';//width of btns is percent based on number of btns needed
+    function renderBtns(datesCollection) {
+        var btnWidth = '' + (100 / (datesCollection.length / 0.94)) + '%';//width of btns is percent based on number of btns needed
         
         //inform user the dates of their picures span too many days
-        if (numOfDays.length > 7) {
+        if (datesCollection.length > 7) {
             alert('Date range of images present in img/gallery folder must not span more than 7 days');
         } else {
             //render btns on page
-            for (var i = 0; i < numOfDays.length; i++) {
+            for (var i = 0; i < datesCollection.length; i++) {
                 $filterNav.find('ul').append('<li class="day' + (i + 1) + '">' + btnLabels[i] + '</li>');
                 $resetNav.find('ul').append('<li class="day' + (i + 1) + '">Reset</li>');
             }
