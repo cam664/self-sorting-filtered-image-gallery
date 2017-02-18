@@ -15,14 +15,14 @@ Img.prototype.collect = function () {
 //render method creates css classes .image-wrapper, .view and .filter-indicator with class .day to set corresponding day color
 Img.prototype.render = function () {
 
-    $('#image-container').append('<div class="image-wrapper"><div class="view"><img src="img/img-loading.gif" data-src=' +/* '/gallery/' + */this.src + '></div><div class="filter-indicator day' + this.day + '"></div></div>');
+    $('#image-container').append('<div class="image-wrapper"><div class="view"><img src="img/img-loading.gif" data-src=' + '/gallery/' + this.src + '></div><div class="filter-indicator day' + this.day + '"></div></div>');
 };
 
 Img.instances = [];
 
 
 var initPage = (function () {
-    var dir = "gallery/";
+    var dir = "/gallery/";
     var datesCollection = [];
     //local ajax call
     $.ajax({
@@ -54,7 +54,7 @@ var initPage = (function () {
     //check the date prop of Img.instances agaisnt the set of dates in numOfDays. Match index + 1 becomes correct day picture was taken
     function setImgsDayThenRender() {
         Img.instances.forEach(function (el) {
-            console.log(datesCollection);
+
             el.day = datesCollection.indexOf(el.date) + 1;
 
             el.render();//render after date set
