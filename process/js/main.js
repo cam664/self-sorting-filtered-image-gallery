@@ -6,6 +6,8 @@ var Img = function (date, src) {
 
     this.collect();
 }
+
+Img.instances = [];
 //on construction push instance into array
 Img.prototype.collect = function () {
     if (Img.instances.indexOf(this) === -1) {
@@ -17,9 +19,6 @@ Img.prototype.render = function () {
 
     $('#image-container').append('<div class="image-wrapper"><div class="view"><img src="img/img-loading.gif" data-src=' + '/gallery/' + this.src + '></div><div class="filter-indicator day' + this.day + '"></div></div>');
 };
-
-Img.instances = [];
-
 
 var initPage = (function () {
     var dir = "/gallery/";
@@ -38,31 +37,27 @@ var initPage = (function () {
                         datesCollection.push(date[0]);//collect all unique dates
                     }
                     
-                    var image = new Img(date[0], val);//instantiate with date and src (val)
+                    var image = new Img(date[0], val);
                 }
             });
         },
 
         complete: function () {
-            
-            setImgsDayThenRender();
-            lazyLoad.loadImages();//load all images currently in viewport
-            nav.renderBtns(datesCollection);//populate navigation
-        }
-    });
-
-    //check the date prop of Img.instances agaisnt the set of dates in numOfDays. Match index + 1 becomes correct day picture was taken
-    function setImgsDayThenRender() {
-        Img.instances.forEach(function (el) {
-
+            Img.instances.forEach(function (el) {
+            //check the date prop of Img.instances agaisnt the set of dates in numOfDays. Match index + 1 becomes correct day picture was taken
             el.day = datesCollection.indexOf(el.date) + 1;
 
-            el.render();//render after date set
+            el.render();
         });
-        for (var i = 0; i < 4; i++) {//adding non visible elements to prevent flexbox rendering the last row of images with spaces between them  
-            $('#image-container').append('<div class="image-placeholder"></div>');
+            //adding non visible elements to prevent flexbox rendering the last row of images with spaces between them
+            for (var i = 0; i < 4; i++) {  
+                $('#image-container').append('<div class="image-placeholder"></div>');
+            }
+
+            lazyLoad.loadImages();
+            nav.renderBtns(datesCollection);
         }
-    }
+    });  
 })();
 
 var lazyLoad = (function () {
@@ -75,7 +70,6 @@ var lazyLoad = (function () {
     //bind events
     $window.on('resize scroll', function () {
         didScroll = true;
-        events.emit('scrolled');//avoiding multiple scroll event listeners on window
     });
 
     setScrollInterval(scrollHandler);//used for throttling window scroll events. 
@@ -104,11 +98,11 @@ var lazyLoad = (function () {
     }
     //if image in viewport 'load' it by switching data-src and real src
     function loadImages() {
-        var $images = $('#image-container img');
+        var $images = $('#image-container img:not(:hidden)');
 
         $images.each(function (index) {
-
             if (isElementInViewport(this)) {
+                console.log(this);
                 $(this).attr("src", $(this).attr("data-src"));
             }
         });
@@ -133,9 +127,11 @@ var nav = (function () {
     var btnLabels = ['Day One', 'Day Two', 'Day Three', 'Day Four', 'Day Five', 'Day Six', 'Day Seven'];//used for nav btn labels
 
     //bind events
-    events.on('scrolled', stickyNav);//window scroll event bound in lazyload
+    $window.on('resize scroll', function() {
+        stickyNav();
+    });
 
-    $ul.on('click', 'li', function () {
+    $ul.on('click', 'li', function() {
         navAnimations($(this));
     });
 
@@ -175,14 +171,14 @@ var nav = (function () {
         if ($this.hasClass('slide-down')) {
             $this.removeClass('slide-down').addClass('slide-up');
             resetFilterColor();
-            filterImgs.resetFilter();//method for restoring all previously filtered out images into view again
+            setTimeout(filterImgs.resetFilter, 350);//method for restoring all previously filtered out images into view again
         } else {
             $filterNav.find('.slide-down').removeClass('slide-down').addClass('slide-up');
             $this.addClass('slide-down');
             $resetNav.find('.' + clickedClass).addClass('active');
             resetFilterColor();
             applyFilterColor($this);
-            filterImgs.applyFilter($this);//method for filtering out images from view. Pass $this for info on what .day<number> to filter by
+            setTimeout(filterImgs.applyFilter($this), 350);//method for filtering out images from view. Pass $this for info on what .day<number> to filter by
         }
 
     }
@@ -219,11 +215,11 @@ var filterImgs = (function () {
             } else if ($(this).find('.filter-indicator').hasClass(clickedClass)) {
                 $(this).show();
             }
-            $(this).find('img').attr("src", 'img/img-loading.gif');//set images back to loading gif to prevent browser having to render lots of images a once and lagging out
+            $(this).find('img').attr("src", 'img/img-loading.gif');//set images back to loading gif to prevent browser having to render lots of images at once
         })
-        setTimeout(lazyLoad.loadImages, 50);//load images in viewport 
+        setTimeout(lazyLoad.loadImages, 50);
     }
-    //bring all previously filtered images back into view
+    
     function resetFilter() {
         $('.image-wrapper').each(function (index) {
             $(this).show();
@@ -289,7 +285,7 @@ var viewImg = (function () {
         $nextPic.find('.view').addClass('view-active');
         $nextPic.find('.filter-indicator').css('visibility', 'hidden');
 
-        lazyLoad.loadImages();//load that are being navigated through
+        lazyLoad.loadImages();
     }
 
     function prev() {
