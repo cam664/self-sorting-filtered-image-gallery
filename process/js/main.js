@@ -17,7 +17,7 @@ Img.prototype.collect = function () {
 //render method creates css classes .image-wrapper, .view and .filter-indicator with class .day to set corresponding day color
 Img.prototype.render = function () {
 
-    $('#image-container').append('<div class="image-wrapper"><div class="view"><img src="img/img-loading.gif" data-src=' + '/gallery/' + this.src + '></div><div class="filter-indicator day' + this.day + '"></div></div>');
+    $('#image-container').append('<div class="image-wrapper"><div class="view"><img src="img/img-loading.gif" data-src=' + 'gallery/' + this.src + '></div><div class="filter-indicator day' + this.day + '"></div></div>');
 };
 
 var initPage = (function () {
@@ -43,19 +43,25 @@ var initPage = (function () {
         },
 
         complete: function () {
-            Img.instances.forEach(function (el) {
-            //check the date prop of Img.instances agaisnt the set of dates in numOfDays. Match index + 1 becomes correct day picture was taken
-            el.day = datesCollection.indexOf(el.date) + 1;
+            var sortedDates = datesCollection.sort(function(a, b){
+                if (a < b) { return -1 }
+                if (a > b) { return 1 }
+              	else { return 0 };
+            });
 
-            el.render();
-        });
+            Img.instances.forEach(function (el) {
+                //check the date prop of Img.instances agaisnt the set of dates in numOfDays. Match index + 1 becomes correct day picture was taken
+                el.day = sortedDates.indexOf(el.date) + 1;
+
+                el.render();
+            });
             //adding non visible elements to prevent flexbox rendering the last row of images with spaces between them
             for (var i = 0; i < 4; i++) {  
                 $('#image-container').append('<div class="image-placeholder"></div>');
             }
 
             lazyLoad.loadImages();
-            nav.renderBtns(datesCollection);
+            nav.renderBtns(sortedDates);
         }
     });  
 })();
@@ -102,7 +108,7 @@ var lazyLoad = (function () {
 
         $images.each(function (index) {
             if (isElementInViewport(this)) {
-                console.log(this);
+
                 $(this).attr("src", $(this).attr("data-src"));
             }
         });
